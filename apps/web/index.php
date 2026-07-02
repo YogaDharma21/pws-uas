@@ -2,18 +2,20 @@
 // 1. Jalankan session untuk tahu siapa yang login
 session_start();
 
-// 2. Hubungkan dengan file database
+// 2. Hubungkan dengan file database dan class produk baru
 require_once 'config/database.php';
+require_once 'classes/produk.php'; // Tambahkan ini
 
-// 3. Buat objek database dan ambil data produk (bisa dengan filter kategori dan pencarian)
+// 3. Buat objek database dan objek produk
 $db = new database();
+$produkObj = new produk($db); // Instansiasi class produk dengan menyertakan koneksi database
 
 // Mengambil nilai keyword jika ada aktivitas pencarian
 $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
 $id_kategori = isset($_GET['id_kategori']) ? $_GET['id_kategori'] : null;
 
-// Memanggil fungsi ambilProduk dengan menyertakan parameter kategori dan keyword pencarian
-$data_produk = $db->ambilProduk($id_kategori, $keyword); 
+// Memanggil fungsi ambilProduk melalui objek produkObj yang baru
+$data_produk = $produkObj->ambilProduk($id_kategori, $keyword); 
 ?>
 
 <!DOCTYPE html>
@@ -161,7 +163,8 @@ $data_produk = $db->ambilProduk($id_kategori, $keyword);
                                         <div class="mt-auto">
                                             <h5 class="text-dark fw-bold mb-2">Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></h5>
                                             <small class="text-secondary d-block mb-3">Stok tersedia: <?php echo $row['stok']; ?></small>
-                                            <a href="beli.php?id=<?php echo $row['id_produk']; ?>" class="btn btn-outline-primary btn-sm w-100">
+                                            
+                                            <a href="proses/beli.php?id=<?php echo $row['id_produk']; ?>" class="btn btn-outline-primary btn-sm w-100">
                                                 <i class="bx bx-cart-add me-1"></i> Tambah Ke Keranjang
                                             </a>
                                         </div>

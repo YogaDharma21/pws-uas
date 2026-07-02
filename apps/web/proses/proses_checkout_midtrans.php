@@ -1,0 +1,204 @@
+<?php
+session_start();
+
+// =========================================================================
+// PERUBAHAN 1: Path disesuaikan karena file sekarang ada di dalam folder 'proses'
+// =========================================================================
+require_once '../config/database.php'; 
+require_once '../config/midtrans_config.php'; 
+
+// Proteksi halaman: Karena file di dalam folder, pengalihan kembali ke root menggunakan '../'
+if (!isset($_SESSION['id_user'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
+if (!isset($_SESSION['keranjang']) || empty($_SESSION['keranjang'])) {
+    header('Location: ../keranjang.php');
+    exit;
+}
+
+$id_user = $_SESSION['id_user'];
+
+// Inisialisasi Class Database kamu dan ambil koneksi MySQLi ($conn)
+$db_obj = new database();
+$koneksi = $db_obj->conn;
+
+// Ambil data pelanggan dari database untuk keperluan Customer Details di Midtrans
+$query_user = $koneksi->query("SELECT * FROM users WHERE id_user = '$id_user'");
+$data_user = $query_user->fetch_assoc();
+
+$total_harga = 0;
+$detail_items = [];      // Untuk keperluan simpan ke database lokal
+$midtrans_items = [];    // Untuk keperluan dikirim ke API Midtrans
+
+// Hitung total harga riil dari database berdasarkan session id_produk => qty
+foreach ($_SESSION['keranjang'] as $id_produk => $qty) {
+    $id_produk_aman = $koneksi->real_escape_string($id_produk);
+    $query_prod = $koneksi->query("SELECT * FROM produk WHERE id_produk = '$id_produk_aman'");
+    
+    if ($query_prod && $query_prod->num_rows > 0) {
+        $prod = $query_prod->fetch_assoc();
+        $harga_satuan = $prod['harga'];
+        $subtotal = $harga_satuan * $qty;
+        
+        $total_harga += $subtotal;
+        
+        // Simpan ke array penampung database lokal
+        $detail_items[] = [
+            'id_produk'    => $id_produk_aman,
+            'jumlah'       => $qty,
+            'harga_satuan' => $harga_satuan,
+            'subtotal'     => $subtotal
+        ];
+
+        // Format array khusus yang diminta oleh Midtrans
+        $midtrans_items[] = [
+            'id'       => $prod['id_produk'],
+            'price'    => (int)$harga_satuan,
+            'quantity' => (int)$qty,
+            'name'     => substr($prod['nama_produk'], 0, 50) // Batasi nama maks 50 karakter agar aman
+        ];
+    }
+}
+
+// Buat Order ID unik untuk Midtrans
+$midtrans_order_id = 'TZN-' . time();
+
+// Mulai database transaction gaya MySQLi
+$koneksi->begin_transaction();
+
+try {
+    // INSERT ke tabel `pesanan` dengan menyimpan midtrans_order_id
+    $sql_pesanan = "INSERT INTO pesanan (id_user, total_harga, status_pesanan, status_pembayaran, midtrans_order_id) 
+                    VALUES (?, ?, 'Pending', 'Pending', ?)";
+    
+    $stmt_pesanan = $koneksi->prepare($sql_pesanan);
+    if (!$stmt_pesanan) {
+        throw new Exception("Gagal menyiapkan statement pesanan: " . $koneksi->error);
+    }
+    
+    $stmt_pesanan->bind_param("ids", $id_user, $total_harga, $midtrans_order_id);
+    $stmt_pesanan->execute();
+    
+    // Ambil ID pesanan lokal yang baru saja terbuat
+    $id_pesanan_baru = $koneksi->insert_id;
+    $stmt_pesanan->close();
+
+    // INSERT ke tabel `detail_pesanan`
+    $sql_detail = "INSERT INTO detail_pesanan (id_pesanan, id_produk, jumlah, harga_satuan, subtotal) 
+                   VALUES (?, ?, ?, ?, ?)";
+    $stmt_detail = $koneksi->prepare($sql_detail);
+    if (!$stmt_detail) {
+        throw new Exception("Gagal menyiapkan statement detail pesanan: " . $koneksi->error);
+    }
+
+    foreach ($detail_items as $item) {
+        $stmt_detail->bind_param(
+            "iiidd", 
+            $id_pesanan_baru, 
+            $item['id_produk'], 
+            $item['jumlah'], 
+            $item['harga_satuan'], 
+            $item['subtotal']
+        );
+        $stmt_detail->execute();
+    }
+    $stmt_detail->close();
+
+    // Jika simpan database lokal sukses, komit transaksinya
+    $koneksi->commit();
+
+    // =========================================================================
+    // PROSES GENERATE SNAP TOKEN MIDTRANS
+    // =========================================================================
+    $transaction_details = [
+        'order_id'     => $midtrans_order_id,
+        'gross_amount' => (int)$total_harga,
+    ];
+
+    $customer_details = [
+        'first_name' => $data_user['nama'],
+        'email'      => $data_user['email'],
+        'phone'      => $data_user['no_hp'] ?? '',
+        'billing_address' => [
+            'first_name' => $data_user['nama'],
+            'address'    => $data_user['alamat'] ?? '',
+        ]
+    ];
+
+    $transaction_params = [
+        'transaction_details' => $transaction_details,
+        'item_details'        => $midtrans_items,
+        'customer_details'    => $customer_details
+    ];
+
+    // Minta Snap Token dari server Midtrans
+    $snapToken = \Midtrans\Snap::getSnapToken($transaction_params);
+
+    // Kosongkan keranjang belanja
+    unset($_SESSION['keranjang']);
+
+} catch (Exception $e) {
+    $koneksi->rollback();
+    die("Gagal memproses checkout: " . $e->getMessage());
+}
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran - TECHNO ZONE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<?php echo \Midtrans\Config::$clientKey; ?>"></script>
+</head>
+<body class="bg-light">
+
+    <div class="container my-5 text-center">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm p-5">
+                    <h3 class="fw-bold text-success mb-3">Pesanan Anda Berhasil Dibuat!</h3>
+                    <p class="text-muted">Klik tombol di bawah ini untuk melakukan pembayaran menggunakan Midtrans Payment Gateway.</p>
+                    
+                    <div class="my-4 p-3 bg-light rounded text-start">
+                        <strong>Detail Ringkas:</strong> <br>
+                        <small class="text-muted">Order ID : <?php echo $midtrans_order_id; ?></small> <br>
+                        <small class="text-muted">Total Bayar: </small> <strong class="text-danger">Rp <?php echo number_format($total_harga, 0, ',', '.'); ?></strong>
+                    </div>
+
+                    <button id="pay-button" class="btn btn-primary btn-lg w-100 fw-bold shadow-sm py-3">BAYAR SEKARANG</button>
+                    <a href="../index.php" class="btn btn-link text-secondary mt-3 text-decoration-none">Kembali ke Beranda</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    var payButton = document.getElementById('pay-button');
+    payButton.addEventListener('click', function () {
+        window.snap.pay('<?php echo $snapToken; ?>', {
+            onSuccess: function(result){
+                // PERUBAHAN 3: Ditambahkan '../' agar mengarah ke file proses_sukses.php yang juga berada di dalam folder proses/ 
+                // karena eksekusi JavaScript ini berjalan dari perspektif URL browser saat ini (localhost/apps/web/proses/proses_checkout_midtrans.php).
+                // Jika proses_sukses.php juga dipindah ke folder proses, panggil langsung tanpa '../'
+                window.location.href = 'proses_sukses.php?order_id=' + result.order_id + '&method=' + result.payment_type;
+            },
+            onPending: function(result){
+                alert("Menunggu pembayaran Anda!"); 
+                window.location.href = '../index.php'; // Keluar folder menuju index utama
+            },
+            onError: function(result){
+                alert("Pembayaran Gagal!"); 
+                console.log(result);
+            },
+            onClose: function(){
+                alert('Anda menutup halaman pembayaran sebelum selesai.');
+            }
+        });
+    });
+</script>
+</body>
+</html>

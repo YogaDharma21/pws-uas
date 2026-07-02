@@ -5,13 +5,18 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
-require_once 'config/database.php';
+
+// =========================================================================
+// PERUBAHAN 1: Jalur disesuaikan karena file berada di dalam folder 'proses'
+// =========================================================================
+require_once '../config/database.php';
 
 $db = new database();
 
 // 1. Validasi: Pastikan keranjang tidak kosong
 if (empty($_SESSION['keranjang'])) {
-    header("Location: index.php");
+    // Keluar folder untuk menuju ke index utama
+    header("Location: ../index.php");
     exit();
 }
 
@@ -90,10 +95,12 @@ try {
     // 5. Kosongkan isi keranjang belanja session
     unset($_SESSION['keranjang']);
 
-    // Notifikasi sukses
+    // =========================================================================
+    // PERUBAHAN 2: Ditambahkan '../' pada window.location.href agar kembali ke root luar
+    // =========================================================================
     echo "<script>
             alert('Proses Checkout Berhasil! Pesanan Anda telah tersimpan di database.');
-            window.location.href = 'index.php';
+            window.location.href = '../index.php';
           </script>";
     exit();
 
@@ -101,9 +108,12 @@ try {
     // Jika ada satu saja yang gagal, batalkan seluruh manipulasi data di atas
     $db->conn->rollback();
     
+    // =========================================================================
+    // PERUBAHAN 3: Ditambahkan '../' agar dialihkan keluar folder menuju keranjang.php
+    // =========================================================================
     echo "<script>
             alert('Gagal melakukan checkout: " . $e->getMessage() . "');
-            window.location.href = 'keranjang.php';
+            window.location.href = '../keranjang.php';
           </script>";
     exit();
 }

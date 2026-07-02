@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'config/database.php';
+require_once 'config/database.php'; // Tetap aman karena file database tidak pindah
 
 $db = new database();
 
@@ -10,9 +10,9 @@ if (isset($_POST['update_keranjang'])) {
         foreach ($_POST['qty'] as $id_prod => $jumlah) {
             $jumlah = (int)$jumlah;
             if ($jumlah <= 0) {
-                unset($_SESSION['keranjang'][$id_prod]); // Hapus produk jika di-set ke 0 atau minus
+                unset($_SESSION['keranjang'][$id_prod]); 
             } else {
-                $_SESSION['keranjang'][$id_prod] = $jumlah; // Update jumlah baru
+                $_SESSION['keranjang'][$id_prod] = $jumlah; 
             }
         }
     }
@@ -80,13 +80,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'hapus') {
                                 <?php 
                                 $grand_total = 0;
                                 foreach ($_SESSION['keranjang'] as $id_produk => $qty): 
-                                    // Mengamankan ID produk sebelum dimasukkan ke query
                                     $id_produk_aman = $db->conn->real_escape_string($id_produk);
-                                    
-                                    // Eksekusi query mengambil detail produk berdasarkan kecocokan ID-nya
                                     $query = $db->conn->query("SELECT * FROM produk WHERE id_produk = '$id_produk_aman'");
                                     
-                                    // Jika data produk ditemukan di database
                                     if ($query && $query->num_rows > 0) {
                                         $row = $query->fetch_assoc();
                                         $total_harga_produk = $row['harga'] * $qty;
@@ -102,7 +98,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'hapus') {
                                         <input type="number" name="qty[<?php echo $id_produk; ?>]" class="form-control form-control-sm text-center" value="<?php echo $qty; ?>" min="1" max="<?php echo $row['stok']; ?>">
                                     </td>
                                     <td class="text-end fw-bold text-primary">Rp <?php echo number_format($total_harga_produk, 0, ',', '.'); ?></td>
-                                    <td class="text-center">
+                                    <td>
                                         <a href="keranjang.php?action=hapus&id=<?php echo $id_produk; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus produk ini dari keranjang?');">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </a>
@@ -125,7 +121,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'hapus') {
                             <h4 class="mb-1 text-muted small text-uppercase fw-bold">Total Pembayaran:</h4>
                             <h2 class="text-danger fw-bold mb-3">Rp <?php echo number_format($grand_total, 0, ',', '.'); ?></h2>
                             
-                            <a href="proses_checkout.php" class="btn btn-success btn-lg px-5 fw-bold shadow-sm">
+                            <a href="proses/proses_checkout_midtrans.php" class="btn btn-success btn-lg px-5 fw-bold shadow-sm">
                                 <i class="fa-solid fa-money-check-dollar me-2"></i> Selesaikan Pesanan (Checkout)
                             </a>
                         </div>
