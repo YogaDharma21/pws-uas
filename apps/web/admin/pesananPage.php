@@ -17,8 +17,8 @@
     </script>";
     exit; 
 }
-  
-    $page = 'dashboard';
+
+    $page = 'pesananPage'; 
 
     include 'templates/header.php';
     include 'templates/sidebar.php';
@@ -27,13 +27,17 @@
 
 <div class="header-action">
     <div class="title-area">
-        <h1>Dashboard</h1>
+        <h1>Pesanan</h1>
         <p></p>
+    </div>
+    
+    <div class="button-group">
+        <button class="btn-export">Export Data </button>
+        <button class="btn-add">+ Tambah Pesanan</button>
     </div>
 </div>
 
-<div class="content-body">
-    </div>
+
 
 <?php
     include 'templates/footer.php';

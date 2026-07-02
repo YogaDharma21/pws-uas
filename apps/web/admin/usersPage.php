@@ -18,7 +18,7 @@
     exit; 
 }
   
-    $page = 'dashboard';
+    $page = 'usersPage';
 
     include 'templates/header.php';
     include 'templates/sidebar.php';
@@ -27,8 +27,12 @@
 
 <div class="header-action">
     <div class="title-area">
-        <h1>Dashboard</h1>
+        <h1>Users</h1>
         <p></p>
+    </div>
+    
+    <div class="button-group">
+        <button class="btn-add">+ Tambah User</button>
     </div>
 </div>
 
