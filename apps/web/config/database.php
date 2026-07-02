@@ -1,6 +1,5 @@
 <?php
 class database {
-    // Properti public agar koneksinya bisa langsung dipanggil di file lain dengan mudah
     public $conn; 
     
     public function __construct(){

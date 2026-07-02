@@ -1,13 +1,9 @@
 <?php
 session_start();
 
-// =========================================================================
-// PERUBAHAN 1: Path disesuaikan karena file sekarang ada di dalam folder 'proses'
-// =========================================================================
 require_once '../config/database.php'; 
 require_once '../config/midtrans_config.php'; 
 
-// Proteksi halaman: Karena file di dalam folder, pengalihan kembali ke root menggunakan '../'
 if (!isset($_SESSION['id_user'])) {
     header('Location: ../login.php');
     exit;
@@ -20,19 +16,16 @@ if (!isset($_SESSION['keranjang']) || empty($_SESSION['keranjang'])) {
 
 $id_user = $_SESSION['id_user'];
 
-// Inisialisasi Class Database kamu dan ambil koneksi MySQLi ($conn)
 $db_obj = new database();
 $koneksi = $db_obj->conn;
 
-// Ambil data pelanggan dari database untuk keperluan Customer Details di Midtrans
 $query_user = $koneksi->query("SELECT * FROM users WHERE id_user = '$id_user'");
 $data_user = $query_user->fetch_assoc();
 
 $total_harga = 0;
-$detail_items = [];      // Untuk keperluan simpan ke database lokal
-$midtrans_items = [];    // Untuk keperluan dikirim ke API Midtrans
+$detail_items = [];      
+$midtrans_items = [];    
 
-// Hitung total harga riil dari database berdasarkan session id_produk => qty
 foreach ($_SESSION['keranjang'] as $id_produk => $qty) {
     $id_produk_aman = $koneksi->real_escape_string($id_produk);
     $query_prod = $koneksi->query("SELECT * FROM produk WHERE id_produk = '$id_produk_aman'");
@@ -44,7 +37,6 @@ foreach ($_SESSION['keranjang'] as $id_produk => $qty) {
         
         $total_harga += $subtotal;
         
-        // Simpan ke array penampung database lokal
         $detail_items[] = [
             'id_produk'    => $id_produk_aman,
             'jumlah'       => $qty,
@@ -52,24 +44,20 @@ foreach ($_SESSION['keranjang'] as $id_produk => $qty) {
             'subtotal'     => $subtotal
         ];
 
-        // Format array khusus yang diminta oleh Midtrans
         $midtrans_items[] = [
             'id'       => $prod['id_produk'],
             'price'    => (int)$harga_satuan,
             'quantity' => (int)$qty,
-            'name'     => substr($prod['nama_produk'], 0, 50) // Batasi nama maks 50 karakter agar aman
+            'name'     => substr($prod['nama_produk'], 0, 50) 
         ];
     }
 }
 
-// Buat Order ID unik untuk Midtrans
 $midtrans_order_id = 'TZN-' . time();
 
-// Mulai database transaction gaya MySQLi
 $koneksi->begin_transaction();
 
 try {
-    // INSERT ke tabel `pesanan` dengan menyimpan midtrans_order_id
     $sql_pesanan = "INSERT INTO pesanan (id_user, total_harga, status_pesanan, status_pembayaran, midtrans_order_id) 
                     VALUES (?, ?, 'Pending', 'Pending', ?)";
     
@@ -81,11 +69,9 @@ try {
     $stmt_pesanan->bind_param("ids", $id_user, $total_harga, $midtrans_order_id);
     $stmt_pesanan->execute();
     
-    // Ambil ID pesanan lokal yang baru saja terbuat
     $id_pesanan_baru = $koneksi->insert_id;
     $stmt_pesanan->close();
 
-    // INSERT ke tabel `detail_pesanan`
     $sql_detail = "INSERT INTO detail_pesanan (id_pesanan, id_produk, jumlah, harga_satuan, subtotal) 
                    VALUES (?, ?, ?, ?, ?)";
     $stmt_detail = $koneksi->prepare($sql_detail);
@@ -106,12 +92,8 @@ try {
     }
     $stmt_detail->close();
 
-    // Jika simpan database lokal sukses, komit transaksinya
     $koneksi->commit();
 
-    // =========================================================================
-    // PROSES GENERATE SNAP TOKEN MIDTRANS
-    // =========================================================================
     $transaction_details = [
         'order_id'     => $midtrans_order_id,
         'gross_amount' => (int)$total_harga,
@@ -133,10 +115,8 @@ try {
         'customer_details'    => $customer_details
     ];
 
-    // Minta Snap Token dari server Midtrans
     $snapToken = \Midtrans\Snap::getSnapToken($transaction_params);
 
-    // Kosongkan keranjang belanja
     unset($_SESSION['keranjang']);
 
 } catch (Exception $e) {
@@ -181,14 +161,11 @@ try {
     payButton.addEventListener('click', function () {
         window.snap.pay('<?php echo $snapToken; ?>', {
             onSuccess: function(result){
-                // PERUBAHAN 3: Ditambahkan '../' agar mengarah ke file proses_sukses.php yang juga berada di dalam folder proses/ 
-                // karena eksekusi JavaScript ini berjalan dari perspektif URL browser saat ini (localhost/apps/web/proses/proses_checkout_midtrans.php).
-                // Jika proses_sukses.php juga dipindah ke folder proses, panggil langsung tanpa '../'
                 window.location.href = 'proses_sukses.php?order_id=' + result.order_id + '&method=' + result.payment_type;
             },
             onPending: function(result){
                 alert("Menunggu pembayaran Anda!"); 
-                window.location.href = '../index.php'; // Keluar folder menuju index utama
+                window.location.href = '../index.php'; 
             },
             onError: function(result){
                 alert("Pembayaran Gagal!"); 

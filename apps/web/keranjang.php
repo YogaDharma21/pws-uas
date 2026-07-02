@@ -1,10 +1,9 @@
 <?php
 session_start();
-require_once 'config/database.php'; // Tetap aman karena file database tidak pindah
+require_once 'config/database.php'; 
 
 $db = new database();
 
-// 1. Logika untuk Update Jumlah (Quantity) lewat tombol "Perbarui Keranjang"
 if (isset($_POST['update_keranjang'])) {
     if (isset($_POST['qty']) && is_array($_POST['qty'])) {
         foreach ($_POST['qty'] as $id_prod => $jumlah) {
@@ -20,7 +19,6 @@ if (isset($_POST['update_keranjang'])) {
     exit();
 }
 
-// 2. Logika untuk Hapus item tertentu dari keranjang via tombol Trash/Hapus
 if (isset($_GET['action']) && $_GET['action'] == 'hapus') {
     $id_hapus = $_GET['id'];
     if (isset($_SESSION['keranjang'][$id_hapus])) {

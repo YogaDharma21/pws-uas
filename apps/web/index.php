@@ -1,20 +1,15 @@
 <?php
-// 1. Jalankan session untuk tahu siapa yang login
 session_start();
 
-// 2. Hubungkan dengan file database dan class produk baru
 require_once 'config/database.php';
-require_once 'classes/produk.php'; // Tambahkan ini
+require_once 'classes/produk.php'; 
 
-// 3. Buat objek database dan objek produk
 $db = new database();
-$produkObj = new produk($db); // Instansiasi class produk dengan menyertakan koneksi database
+$produkObj = new produk($db); 
 
-// Mengambil nilai keyword jika ada aktivitas pencarian
 $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
 $id_kategori = isset($_GET['id_kategori']) ? $_GET['id_kategori'] : null;
 
-// Memanggil fungsi ambilProduk melalui objek produkObj yang baru
 $data_produk = $produkObj->ambilProduk($id_kategori, $keyword); 
 ?>
 
@@ -31,7 +26,6 @@ $data_produk = $produkObj->ambilProduk($id_kategori, $keyword);
     <link href="https://cdn.boxicons.com/3.0.8/fonts/filled/boxicons-filled.min.css" rel="stylesheet">
     
     <style>
-        /* Desain spanduk atas disesuaikan dengan tema teknologi/elektronik modern */
         .hero-section {
             background: linear-gradient(rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.95)), url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=1200') no-repeat center center;
             background-size: cover;
@@ -128,7 +122,6 @@ $data_produk = $produkObj->ambilProduk($id_kategori, $keyword);
 
                 <div class="row">
                     <?php 
-                    // Logika IF untuk cek isi data produk dari database
                     if ($data_produk && $data_produk->num_rows > 0) {
                         while ($row = $data_produk->fetch_assoc()) {
                     ?>
@@ -136,7 +129,6 @@ $data_produk = $produkObj->ambilProduk($id_kategori, $keyword);
                                 <div class="card h-100 border-0 shadow-sm">
                                     
                                     <?php 
-                                    // Pengecekan Gambar Aman: Jika gambar fisik kosong/tidak ada, dialihkan ke gambar placeholder stabil
                                     $file_gambar = "assets/images/" . $row['gambar'];
                                     if (!empty($row['gambar']) && file_exists($file_gambar)) {
                                         $sumber_gambar = $file_gambar;
@@ -149,7 +141,7 @@ $data_produk = $produkObj->ambilProduk($id_kategori, $keyword);
                                     <div class="card-body d-flex flex-column">
                                         <small class="text-primary fw-bold mb-1 text-uppercase text-xs" style="font-size: 11px;">
                                             <?php 
-                                            // Memberikan label dinamis sesuai ID kategori produk
+                                            
                                             if ($row['id_kategori'] == 1) echo 'LAPTOP';
                                             elseif ($row['id_kategori'] == 2) echo 'SMARTPHONE';
                                             elseif ($row['id_kategori'] == 3) echo 'TABLET';
@@ -174,7 +166,6 @@ $data_produk = $produkObj->ambilProduk($id_kategori, $keyword);
                     <?php 
                         } 
                     } else { 
-                        // Jika produk tidak ditemukan / kosong
                     ?>
                         <div class="col-12">
                             <div class="alert alert-light text-center border p-5 shadow-sm">
