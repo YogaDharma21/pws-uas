@@ -1,5 +1,5 @@
 <?php
-class produk {
+class produk_user { 
     private $db;
 
     public function __construct($db_koneksi){

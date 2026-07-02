@@ -2,10 +2,10 @@
 session_start();
 
 require_once 'config/database.php';
-require_once 'classes/produk.php'; 
+require_once 'classes/produk_user.php'; 
 
 $db = new database();
-$produkObj = new produk($db); 
+$produkObj = new produk_user($db); 
 
 $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
 $id_kategori = isset($_GET['id_kategori']) ? $_GET['id_kategori'] : null;
