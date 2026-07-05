@@ -2,6 +2,7 @@
 node_modules/
 .pnp/
 .pnp.*
+apps/web/vendor/
 
 # Build outputs
 dist/
