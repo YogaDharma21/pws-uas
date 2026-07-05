@@ -13,7 +13,7 @@
         public function read() {
             $qry = "SELECT $this->table.*, kategori.nama_kategori FROM $this->table
             INNER JOIN kategori ON $this->table.id_kategori = kategori.id_kategori 
-            ORDER BY $this->table.id_produk DESC";
+            ORDER BY $this->table.id_produk ASC";
             return $this->conn->query($qry);
         }
 
@@ -64,6 +64,7 @@
                         alert('Format file tidak valid!'); 
                         window.location.href='tambahProduk.php';
                       </script>";
+                      return false;
             }
 
             if ($ukuranFile > 2000000){
@@ -71,6 +72,7 @@
                         alert('Ukuran file terlalu besar!'); 
                         window.location.href='tambahProduk.php';
                       </script>";
+                      return false;
             }
 
             $namaFileBaru = uniqid();

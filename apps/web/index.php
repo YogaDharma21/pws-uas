@@ -129,7 +129,7 @@ $data_produk = $produkObj->ambilProduk($id_kategori, $keyword);
                                 <div class="card h-100 border-0 shadow-sm">
                                     
                                     <?php 
-                                    $file_gambar = "assets/images/" . $row['gambar'];
+                                    $file_gambar = "assets/img/" . $row['gambar'];
                                     if (!empty($row['gambar']) && file_exists($file_gambar)) {
                                         $sumber_gambar = $file_gambar;
                                     } else {
