@@ -15,10 +15,10 @@ if (isset($_SESSION['email'])) {
 </head>
 <body>
 
-    <div class="login-container">
-        <div class="login-card">
+    <div class="form-container">
+        <div class="form-card">
             
-            <div class="login-header">
+            <div class="form-header">
                 <h2>Selamat Datang</h2>
                 <p>Masuk ke akun Anda untuk menikmati fitur penuh</p>
             </div>
@@ -34,10 +34,10 @@ if (isset($_SESSION['email'])) {
                     <input type="password" id="password" name="password" placeholder="••••••••" required>
                 </div>
 
-                <button type="submit" class="btn-login">Login</button>
+                <button type="submit" class="btn-form">Login</button>
             </form>
 
-            <div class="login-footer">
+            <div class="form-footer">
                 <p>Belum punya akun? <a href="register.php">Daftar sekarang</a></p>
             </div>
 

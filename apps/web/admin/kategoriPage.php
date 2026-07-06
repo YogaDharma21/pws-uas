@@ -52,20 +52,22 @@
             ?>
             <tr>
                 <td><?php echo $row['id_kategori']; ?></td>
-                <td><strong><?php echo $row['nama_kategori']; ?></strong></td>
+                <td><?php echo $row['nama_kategori']; ?></td>
                 <td>
-                    <a href="kategori/updateKategori.php?id=<?php echo $row['id_kategori']; ?>" class="btn-edit">
-                        <i class="bx bx-edit"></i>
-                    </a>
-                    <a href="kategori/prosesKategori.php?action=delete&id=<?php echo $row['id_kategori']; ?>" class="btn-delete" style="color: #ef4444;">
-                            <i class="bx bx-trash"></i>
-                    </a>
+                    <div class="aksi-group">
+                        <a href="kategori/updateKategori.php?id=<?php echo $row['id_kategori']; ?> "style="color: #ffffff;">
+                            Edit
+                        </a>
+                        <a href="kategori/prosesKategori.php?action=delete&id=<?php echo $row['id_kategori']; ?>"style="color: #ef4444;">
+                            Hapus
+                        </a>
+                    </div>
                 </td>
             </tr>
             <?php
         }
     } else {
-        echo "<tr><td colspan='3' style='text-align:center;'>Belum ada data kategori.</td></tr>";
+        echo "Belum ada data kategori.";
     }
 ?>
 </table>

@@ -43,6 +43,7 @@
 }
 
 .sidebar {
+    position: fixed;
     width: 260px; 
     background-color: #ffffff;
     border-right: 1px solid #e2e8f0;
@@ -51,6 +52,7 @@
 
 
 .main-content {
+    margin-left: 250px;
     flex: 1; 
     padding: 40px;
 }
@@ -162,4 +164,20 @@
 
 .textarea{
     max-width: 200px;
+}
+
+.aksi-group {
+    text-decoration: none;
+    display: flex;            
+    justify-content: center;   
+    gap: 8px;                 
+    align-items: center;
+}
+
+.aksi-group a {
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+    background-color: #0f172a;
 }

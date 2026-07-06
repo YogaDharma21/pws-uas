@@ -16,9 +16,9 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
+    <div class="form-container">
+        <div class="form-card">
+            <div class="form-header">
                 <h2>Selamat Datang</h2>
             </div>
             <form action="proses/proses_register.php" method="POST">
@@ -47,10 +47,10 @@
                     <textarea id="alamat" name="alamat" placeholder="Tuliskan alamat lengkap Anda..." required></textarea>
                 </div>
 
-                <button type="submit" class="btn-login">Daftar </button>
+                <button type="submit" class="btn-form">Daftar </button>
             </form>
 
-            <div class="login-footer">
+            <div class="form-footer">
                 <p>Sudah punya akun? <a href="login.php">Login</a></p>
             </div>
 

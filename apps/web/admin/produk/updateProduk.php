@@ -12,38 +12,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/style.css">
     <title>Document</title>
 </head>
 <body>
-    <h2>Update Produk</h2>
-    <form action="prosesUpdateProduk.php" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="id_produk" value="<?php echo $data['id_produk'] ?>">
-        <label>Nama Produk</label><br>
-        <input type="text" name="nama_produk" value="<?php echo $data['nama_produk'] ?>" required><br><br>
-        <label>Kategori</label><br>
-        <select name="id_kategori" required>
-            <option value="">-- Pilih Kategori --</option>
-            <?php
-                while($row = $dataKategori->fetch_assoc()){
-                    echo "<option value='".$row['id_kategori']."'>".$row['nama_kategori']."</option>";
-                }
-            ?>
-        </select><br><br>
+    <div class="form-container">
+        <div class="form-card">
+            <div class="form-header">
+                <h2>Update Produk</h2>
+            </div>
+            <form action="prosesUpdateProduk.php" method="POST" enctype="multipart/form-data">
+                <div class="form-group">  
+                    <input type="hidden" name="id_produk" value="<?php echo $data['id_produk'] ?>">
+                    <label>Nama Produk</label>
+                    <input type="text" name="nama_produk" value="<?php echo $data['nama_produk'] ?>" required>
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select name="id_kategori" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        <?php
+                            while($row = $dataKategori->fetch_assoc()){
+                                echo "<option value='".$row['id_kategori']."'>".$row['nama_kategori']."</option>";
+                            }
+                        ?>
+                    </select>
+                </div>
 
-        <label>Deskripsi</label><br>
-        <textarea name="deskripsi" rows="5"><?php echo $data['deskripsi'] ?></textarea><br><br>
+                <div class="form-group">
+                    <label>Deskripsi</label>
+                    <textarea name="deskripsi" rows="1"><?php echo $data['deskripsi'] ?></textarea>
+                </div>
 
-        <label>Harga</label><br>
-        <input type="number" name="harga" value="<?php echo $data['harga'] ?>" required><br><br>
+                <div class="form-group">
+                    <label>Harga</label>
+                    <input type="number" name="harga" value="<?php echo $data['harga'] ?>" required>
+                </div>
 
-        <label>Stok</label><br>
-        <input type="number" name="stok" value="<?php echo $data['stok'] ?>" required><br><br>
+                <div class="form-group">
+                    <label>Stok</label>
+                    <input type="number" name="stok" value="<?php echo $data['stok'] ?>" required>
+                </div>
 
-        <label>Gambar Produk</label><br>
-        <input type="file" name="gambar" accept="image/*"><br><br>
+                <div class="form-group">
+                    <label>Gambar Produk</label>
+                    <input type="file" name="gambar" accept="image/*">
+                </div>
 
-        <button type="submit">Simpan</button>
+                <button type="submit" class="btn-form">Simpan</button>
 
-    </form>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

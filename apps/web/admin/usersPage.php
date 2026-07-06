@@ -35,9 +35,6 @@
         <a href="../register.php" style="text-decoration: none;">
             <button class="btn-add">+ Tambah User</button>
         </a>
-        <a href="produk/tambahProduk.php" style="text-decoration: none;">
-            <button class="btn-add">+ Tambah Produk</button>
-        </a>
     </div>
 </div>
 
@@ -64,18 +61,20 @@
                     <td><?php echo $row['no_hp']; ?></td>
                     <td><?php echo $row['nama_role']; ?></td>
                     <td>
-                        <a href="users/updateUser.php?id=<?php echo $row['id_user']; ?>" class="btn-edit">
-                            <i class="bx bx-edit"></i>
-                        </a>
-                        <a href="users/hapusUser.php?action=delete&id=<?php echo $row['id_user']; ?>" class="btn-delete" style="color: #ef4444;">
-                            <i class="bx bx-trash"></i>
-                        </a>
+                        <div class="aksi-group">
+                            <a href="users/updateUser.php?id=<?php echo $row['id_user']; ?> "style="color: #ffffff;">
+                                Edit
+                            </a>
+                            <a href="users/hapusUser.php?action=delete&id=<?php echo $row['id_user']; ?>"style="color: #ef4444;">
+                                Hapus
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 <?php
             }
         } else {
-            echo "<tr><td colspan='8' style='text-align:center;'>Belum ada data user.</td></tr>";
+            echo "Belum ada data user.";
         }
     ?>
 

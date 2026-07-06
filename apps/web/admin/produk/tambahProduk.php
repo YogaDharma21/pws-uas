@@ -8,37 +8,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/style.css">
     <title>Document</title>
 </head>
 <body>
-    <h2>Input Produk</h2>
-    <form action="prosesTambahProduk.php" method="POST" enctype="multipart/form-data">
-        <label>Nama Produk</label><br>
-        <input type="text" name="nama_produk" required><br><br>
-        <label>Kategori</label><br>
-        <select name="id_kategori" required>
-            <option value="">-- Pilih Kategori --</option>
-            <?php
-                while($row = $dataKategori->fetch_assoc()){
-                    echo "<option value='".$row['id_kategori']."'>".$row['nama_kategori']."</option>";
-                }
-            ?>
-        </select><br><br>
+    <div class="form-container">
+        <div class="form-card">
+            <div class="form-header">
+                <h2>Input Produk</h2>
+            </div>
+            <form action="prosesTambahProduk.php" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Nama Produk</label>
+                    <input type="text" name="nama_produk" required>
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select name="id_kategori" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        <?php
+                            while($row = $dataKategori->fetch_assoc()){
+                                echo "<option value='".$row['id_kategori']."'>".$row['nama_kategori']."</option>";
+                            }
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi</label>
+                    <textarea name="deskripsi" rows="1"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Harga</label>
+                    <input type="number" name="harga" required>
+                </div>
 
-        <label>Deskripsi</label><br>
-        <textarea name="deskripsi" rows="5"></textarea><br><br>
+                <div class="form-group">
+                    <label>Stok</label>
+                    <input type="number" name="stok" required>
+                </div>
 
-        <label>Harga</label><br>
-        <input type="number" name="harga" required><br><br>
+                <div class="form-group">
+                    <label>Gambar Produk</label>
+                    <input type="file" name="gambar" accept="image/*" class="file-input">
+                </div>
 
-        <label>Stok</label><br>
-        <input type="number" name="stok" required><br><br>
-
-        <label>Gambar Produk</label><br>
-        <input type="file" name="gambar" accept="image/*"><br><br>
-
-        <button type="submit">Simpan</button>
-
-    </form>
+                <button type="submit" class="btn-form">Simpan</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

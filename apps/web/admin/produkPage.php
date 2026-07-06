@@ -23,7 +23,7 @@
     include 'templates/sidebar.php';
     include 'templates/navbar.php';
 ?>
-
+<link rel="stylesheet" href="../assets/admin.css">
 <div class="header-action">
     <div class="title-area">
         <h1>Data Produk</h1>
@@ -64,18 +64,20 @@
                     <td>Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></td>
                     <td><?php echo $row['stok'] . ' ' . $produk->cekStatusStok($row['stok']); ?></td>
                     <td>
-                        <a href="produk/updateProduk.php?id=<?php echo $row['id_produk']; ?>" class="btn-edit">
-                            <i class="bx bx-edit"></i>
-                        </a>
-                        <a href="produk/prosesProduk.php?action=delete&id=<?php echo $row['id_produk']; ?>" class="btn-delete" style="color: #ef4444;">
-                            <i class="bx bx-trash"></i>
-                        </a>
+                        <div class="aksi-group">
+                            <a href="produk/updateProduk.php?id=<?php echo $row['id_produk']; ?> "style="color: #ffffff;">
+                                Edit
+                            </a>
+                            <a href="produk/prosesProduk.php?action=delete&id=<?php echo $row['id_produk']; ?>"style="color: #ef4444;">
+                                Hapus
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 <?php
             }
         } else {
-            echo "<tr><td colspan='8' style='text-align:center;'>Belum ada data produk.</td></tr>";
+            echo "Belum ada data produk.";
         }
     ?>
 

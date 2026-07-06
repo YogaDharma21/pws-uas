@@ -21,7 +21,6 @@
             $stmt->bind_param("i", $id_kategori);
             $stmt->execute();
             return $stmt->get_result()->fetch_assoc();
-    
         }
 
         public function update ($id_kategori, $nama_kategori) {
