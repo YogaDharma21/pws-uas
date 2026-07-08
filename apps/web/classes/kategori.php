@@ -3,6 +3,12 @@
     class kategori extends database{
         private $table = 'kategori';
 
+        public function totalKategori(){
+            $qry = "SELECT COUNT(*) AS total FROM $this->table";
+            $result = $this->conn->query($qry);
+            return $result->fetch_assoc();
+        }
+
         public function create($nama_kategori){
             $qry = "INSERT INTO $this->table (nama_kategori) VALUES (?)";
             $stmt = $this->conn->prepare($qry);

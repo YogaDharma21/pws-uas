@@ -5,12 +5,12 @@ require_once '../../classes/users.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = new users();
 
-    $id_user  = $_POST['id_user'];
-    $nama     = $_POST['nama'];
-    $email    = $_POST['email'];
-    $no_hp    = $_POST['no_hp'];
-    $alamat   = $_POST['alamat'];
-    $id_role  = $_POST['id_role'];
+    $id_user  = trim($_POST['id_user']);
+    $nama     = trim($_POST['nama']);
+    $email    = trim($_POST['email']);
+    $no_hp    = trim($_POST['no_hp']);
+    $alamat   = trim($_POST['alamat']);
+    $id_role  = trim($_POST['id_role']);
 
     if (empty($nama) || empty($email) || empty($no_hp) || empty($id_role)) {
         echo "<script>alert('Field penting wajib diisi!'); window.history.back();</script>";

@@ -3,8 +3,8 @@
     $kategori = new kategori();
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-        $id_kategori = $_POST['id'];
-        $nama_kategori = $_POST['nama'];
+        $id_kategori = trim($_POST['id']);
+        $nama_kategori = trim($_POST['nama']);
         
         if ($kategori->update($id_kategori, $nama_kategori)) {
             echo "<script>alert('Kategori berhasil diperbarui'); window.location.href='../kategoriPage.php';</script>";

@@ -2,6 +2,12 @@
     require_once __DIR__ . '/../config/database.php';
     class produk extends database{
         private $table = 'produk';
+        
+        public function totalProduk(){
+            $qry = "SELECT COUNT(*) AS total FROM $this->table";
+            $result = $this->conn->query($qry);
+            return $result->fetch_assoc();
+        }
 
         public function create($id_kategori, $nama_produk, $deskripsi, $harga, $stok, $gambar){
             $qry = "INSERT INTO $this->table (id_kategori, nama_produk, deskripsi, harga, stok, gambar) VALUES (?,?,?,?,?,?)";

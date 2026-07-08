@@ -3,6 +3,12 @@
     class users extends database{
         private $table = 'users';
 
+        public function totalUsers(){
+            $qry = "SELECT COUNT(*) AS total FROM $this->table";
+            $result = $this->conn->query($qry);
+            return $result->fetch_assoc();
+        }
+
         public function create($id_role, $nama, $email, $password, $no_hp, $alamat){
             $qry = "INSERT INTO $this->table (id_role, nama, email, password, no_hp, alamat) VALUES (?,?,?,?,?,?)";
             $stmt = $this->conn->prepare($qry);

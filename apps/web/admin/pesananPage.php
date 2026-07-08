@@ -28,7 +28,11 @@
 <div class="header-action">
     <div class="title-area">
         <h1>Pesanan</h1>
-        <p></p>
+    </div>
+    <div class="button-group">
+        <a  href="pesanan/cetakLaporan.php" target="_blank" style="text-decoration: none;">
+            <button class="btn-add">Export PDF</button>
+        </a>
     </div>
     
 </div>

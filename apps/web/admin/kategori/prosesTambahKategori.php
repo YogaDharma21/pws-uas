@@ -3,7 +3,7 @@
     $kategori = new kategori();
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-        $nama_kategori = $_POST['nama'];
+        $nama_kategori = trim($_POST['nama']);
         
         if ($kategori->create($nama_kategori)) {
             echo "<script>alert('Kategori berhasil ditambahkan'); window.location.href='../kategoriPage.php';</script>";

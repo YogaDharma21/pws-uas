@@ -1,4 +1,14 @@
 <?php
+    session_start();
+    if (!isset($_SESSION['email'])) {
+        echo 
+        "<script>
+            alert('Anda harus login terlebih dahulu!'); 
+            window.location.href = '../../login.php';
+        </script>";
+        exit;   
+    }
+
     require_once '../../classes/pesanan.php';
     $pesanan = new pesanan();
     $id_pesanan = $_GET['id'];
@@ -70,10 +80,10 @@
                         }
                         ?>
                     </tbody>
-                </table>
+                </table>    
                 <br>
                 <div class="button-group">
-                    <a href="" style="text-decoration: none;">
+                    <a href="cetakInvoice.php?id=<?php echo $data['id_pesanan']; ?>" style="text-decoration: none;" target="_blank">
                         <button class="btn-add">Cetak Invoice</button>
                     </a>
                     <a href="../pesananPage.php" style="text-decoration: none;">

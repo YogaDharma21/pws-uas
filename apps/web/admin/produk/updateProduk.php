@@ -1,4 +1,14 @@
 <?php
+    session_start();
+    if (!isset($_SESSION['email'])) {
+        echo 
+        "<script>
+            alert('Anda harus login terlebih dahulu!'); 
+            window.location.href = '../../login.php';
+        </script>";
+        exit;   
+    }
+
     require_once '../../classes/kategori.php';
     $kategori = new Kategori();
     $dataKategori = $kategori->getAll();

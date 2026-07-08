@@ -3,11 +3,11 @@ require_once '../../classes/produk.php';
 $produk = new produk();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id_kategori = $_POST['id_kategori'];
-    $nama_produk = $_POST['nama_produk'];
-    $deskripsi   = $_POST['deskripsi'];
-    $harga       = $_POST['harga'];
-    $stok        = $_POST['stok'];
+    $id_kategori = trim($_POST['id_kategori']);
+    $nama_produk = trim($_POST['nama_produk']);
+    $deskripsi   = trim($_POST['deskripsi']);
+    $harga       = trim($_POST['harga']);
+    $stok        = trim($_POST['stok']);
     $file_gambar = $produk->upload_file(); 
 
     if ($produk->create($id_kategori, $nama_produk, $deskripsi, $harga, $stok, $file_gambar)) {

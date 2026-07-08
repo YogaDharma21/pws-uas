@@ -3,6 +3,12 @@
     class Pesanan extends database{
         private $table = 'pesanan';
 
+        public function totalPesanan(){
+            $qry = "SELECT COUNT(*) AS total FROM $this->table";
+            $result = $this->conn->query($qry);
+            return $result->fetch_assoc();
+        }
+
         public function updateStatus($id_pesanan, $status_pesanan, $status_pembayaran) {
             $qry = "UPDATE $this->table SET status_pesanan = ?, status_pembayaran = ? WHERE id_pesanan = ?";
             $stmt = $this->conn->prepare($qry);
