@@ -68,7 +68,7 @@
                             <a href="produk/updateProduk.php?id=<?php echo $row['id_produk']; ?> "style="color: #ffffff;">
                                 Edit
                             </a>
-                            <a href="produk/prosesProduk.php?action=delete&id=<?php echo $row['id_produk']; ?>"style="color: #ef4444;">
+                            <a href="produk/hapusProduk.php?id=<?php echo $row['id_produk']; ?>"style="color: #ef4444;">
                                 Hapus
                             </a>
                         </div>

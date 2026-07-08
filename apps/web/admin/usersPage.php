@@ -65,7 +65,7 @@
                             <a href="users/updateUser.php?id=<?php echo $row['id_user']; ?> "style="color: #ffffff;">
                                 Edit
                             </a>
-                            <a href="users/hapusUser.php?action=delete&id=<?php echo $row['id_user']; ?>"style="color: #ef4444;">
+                            <a href="users/hapusUser.php?id<?php echo $row['id_user']; ?>"style="color: #ef4444;">
                                 Hapus
                             </a>
                         </div>

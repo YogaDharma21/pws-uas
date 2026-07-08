@@ -67,9 +67,9 @@
         <h3>Total Pesanan</h3>
         <h1><?php echo $totalPesanan['total']; ?></h1>
     </div>
-</div>
-    
-<table class="table">
+
+    <h2 style="margin-bottom: 0;"><strong>Data Pesanan</strong></h2>
+<table class="tabledbd">
     <tr>
         <th>ID </th>
         <th>Tanggal</th>

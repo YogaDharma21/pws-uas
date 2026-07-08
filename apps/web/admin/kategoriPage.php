@@ -58,7 +58,7 @@
                         <a href="kategori/updateKategori.php?id=<?php echo $row['id_kategori']; ?> "style="color: #ffffff;">
                             Edit
                         </a>
-                        <a href="kategori/prosesKategori.php?action=delete&id=<?php echo $row['id_kategori']; ?>"style="color: #ef4444;">
+                        <a href="kategori/hapusKategori.php?id=<?php echo $row['id_kategori']; ?>"style="color: #ef4444;">
                             Hapus
                         </a>
                     </div>

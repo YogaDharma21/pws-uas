@@ -162,6 +162,21 @@
     color: white;
 }
 
+.tabledbd{
+    margin-top: -25px;
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+.tabledbd,tr,th,td{
+    padding: 10px;
+    border: 1px solid #0f172a;
+}
+.tabledbd th{
+    background-color: #0f172a;
+    color: white;
+}
+
 .textarea{
     max-width: 200px;
 }
@@ -184,7 +199,7 @@
 
 .dashboard-card{
     display: flex;
-    gap: 20px;
+    gap: 55px;
     margin-top: 30px;
     flex-wrap: wrap;
 }
