@@ -38,10 +38,7 @@ if ($query_pesanan && $query_pesanan->num_rows > 0) {
         }
     }
 
-    echo "<script>
-            alert('Pembayaran Berhasil!');
-            window.location.href = '../index.php';
-          </script>";
+    header("Location: phpMailer.php");
     exit();
 
 } else {
